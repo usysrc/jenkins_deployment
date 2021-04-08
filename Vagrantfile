@@ -13,6 +13,7 @@ Vagrant.configure("2") do |config|
 
     ansible.vm.provision "shell", inline: <<-SHELL
       cp /vagrant/.vagrant/machines/ansible/virtualbox/private_key /home/vagrant/.ssh/id_rsa 
+      chown vagrant /home/vagrant/.ssh/id_rsa
       apt update
       apt upgrade -y
       apt install -y ansible
