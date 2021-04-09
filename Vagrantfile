@@ -29,21 +29,14 @@ Vagrant.configure("2") do |config|
     ansible.vm.hostname = "ansible"
 
     ansible.vm.provision "shell", inline: <<-SHELL
-      cp /vagrant/.vagrant/machines/ansible/virtualbox/private_key /home/vagrant/.ssh/id_rsa 
+      #cp /vagrant/.vagrant/machines/ansible/virtualbox/private_key /home/vagrant/.ssh/id_rsa 
+      cp /vagrant/.ssh/ansible/id_rsa /home/vagrant/.ssh/id_rsa
       chown vagrant /home/vagrant/.ssh/id_rsa
       apt update
       apt upgrade -y
       apt install -y ansible
-      ansible-playbook /vagrant/playbook.yml
+      cd /vagrant/
+      su -c '/vagrant/run_ansible.sh' vagrant
     SHELL
   end
-
- 
-    #jenkins.vm.network "forwarded_port", guest: 80, host: 8080
-    
-    #jenkins.vm.provision "ansible" do |ansible|
-    #  ansible.playbook = "playbook.yml"
-    #end
-
-
 end
