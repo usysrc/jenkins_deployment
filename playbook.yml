@@ -3,5 +3,28 @@
   hosts: all
 
   tasks:
-  - name: add repos for jenkins
-    shell: ls >> log.txt
+    - name: install repository
+      become: yes 
+      shell: wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+
+    - name: add keys
+      become: yes
+      shell: sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+    - name: apt update
+      become: yes
+      apt:
+        update_cache: yes
+
+    - name: apt install java
+      become: yes    
+      apt:
+        name: default-jre
+        state: present
+
+
+    - name: apt install jenkins
+      become: yes
+      apt:
+        name: jenkins
+        state: present
