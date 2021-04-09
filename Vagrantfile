@@ -26,6 +26,7 @@ Vagrant.configure("2") do |config|
 
     jenkins.vm.hostname = "jenkins"
     jenkins.vm.network :private_network, ip: "10.0.0.11"
+    jenkins.vm.network "forward_port", guest: 80, host:8080
   
     jenkins.vm.provision "shell", inline: <<-SHELLL
       ssh-keygen -y -f /vagrant/.vagrant/machines/ansible/virtualbox/private_key >> /home/vagrant/.ssh/authorized_keys
