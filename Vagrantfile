@@ -3,6 +3,23 @@
 
 Vagrant.configure("2") do |config|
 
+  config.vm.define "jenkins" do |jenkins|
+    jenkins.vm.box = "ubuntu/focal64"
+
+    jenkins.vm.hostname = "jenkins"
+    jenkins.vm.network :private_network, ip: "10.0.0.11"
+    #jenkins.vm.network "forward_port", guest: 80, host:8080
+    
+
+    jenkins.ssh.insert_key = false
+    jenkins.ssh.private_key_path = [".ssh/jenkins/id_rsa", "~/.vagrant.d/insecure_private_key"]
+    #jenkins.vm.provision "file", source: ".ssh/jenkins/id_rsa.pub", destination: "~/.ssh/authorized_keys" 
+    jenkins.vm.provision "shell", inline: <<-SHELLL
+      #ssh-keygen -y -f /vagrant/.vagrant/machines/ansible/virtualbox/private_key >> /home/vagrant/.ssh/authorized_keys
+      #systemctl restart sshd
+      cat /vagrant/.ssh/ansible/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
+    SHELLL
+  end
 
   config.vm.define "ansible" do |ansible|
     ansible.vm.box = "ubuntu/focal64"
@@ -20,25 +37,13 @@ Vagrant.configure("2") do |config|
       ansible-playbook /vagrant/playbook.yml
     SHELL
   end
-  
-  config.vm.define "jenkins" do |jenkins|
-    jenkins.vm.box = "ubuntu/focal64"
 
-    jenkins.vm.hostname = "jenkins"
-    jenkins.vm.network :private_network, ip: "10.0.0.11"
-    jenkins.vm.network "forward_port", guest: 80, host:8080
-  
-    jenkins.vm.provision "shell", inline: <<-SHELLL
-      ssh-keygen -y -f /vagrant/.vagrant/machines/ansible/virtualbox/private_key >> /home/vagrant/.ssh/authorized_keys
-      systemctl restart sshd
-    SHELLL
-
+ 
     #jenkins.vm.network "forwarded_port", guest: 80, host: 8080
     
     #jenkins.vm.provision "ansible" do |ansible|
     #  ansible.playbook = "playbook.yml"
     #end
-  end
 
 
 end
