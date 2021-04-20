@@ -7,9 +7,8 @@ Vagrant.configure("2") do |config|
     jenkins.vm.box = "ubuntu/focal64"
 
     jenkins.vm.hostname = "jenkins"
-    jenkins.vm.network :private_network, ip: "10.0.0.11"
-    #jenkins.vm.network "forward_port", guest: 80, host:8080
-    
+    jenkins.vm.network "private_network", ip: "10.0.0.11"
+    jenkins.vm.network "forwarded_port", guest: 8080, host:8080
 
     jenkins.ssh.insert_key = false
     jenkins.ssh.private_key_path = [".ssh/jenkins/id_rsa", "~/.vagrant.d/insecure_private_key"]
